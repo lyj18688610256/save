@@ -1,0 +1,49 @@
+./doop  -a context-insensitive --cfg --input-file demo2.jar --platform java_8_mini  --id demo2 --generate-jimple
+（cfg分析）
+./doop --analysis context-insensitive --input-file Example.jar --platform java_8_mini --information-flow minimal --id example_info_mimal
+./doop --analysis context-insensitive --input-file securibench.jar --platform java_8_mini --information-flow webapps --id web20210125
+./doop --analysis context-insensitive --library-file depend_com_javax.jar --input-file securibench.jar --platform java_8_mini --information-flow lyj --id lyj
+./doop --analysis context-insensitive --library-file depend_lyj.jar --input-file myA.jar --platform java_8_mini --information-flow lyj --id lyj5
+./doop --analysis context-insensitive --library-file depend_com_javax.jar --input-file securibench.jar --platform java_8_mini --information-flow webapps --generate-jimple --cfg --id web
+
+//taint source and sink are not mixed(use 2-object-sensitive+heap can get the right result)
+./doop --analysis 2-object-sensitive+heap --library-file depend_com_javax.jar --input-file securibench.jar --platform java_8_mini --information-flow webapps --generate-jimple --id web
+
+//analyze the securibench.micro.aliasing file(Aliasing1 Aliasing2 ... Harness -- all the file),input file is securibench.jar,it includes the library such as javax com
+./doop --analysis 2-object-sensitive+heap   --input-file securibench.jar --regex securibench.micro.aliasing.* --platform java_8_mini --information-flow webapps --generate-jimple --id web
+
+./doop --analysis 2-object-sensitive+heap   --input-file securibench.jar --main securibench.micro.Harness --platform java_8_mini --information-flow webapps --generate-jimple --id web
+
+./doop --analysis selective-2-object-sensitive+heap --input-file securibench.jar --main securibench.micro.Harness --platform java_7 --information-flow webapps --reflection-high-soundness-mode --distinguish-all-string-buffers --id web
+
+./doop -a selective-2-object-sensitive+heap --library-file depend_com_javax.jar --input-file securibench.jar --information-flow webapps --information-flow-high-soundness --open-programs servlets-only --reflection-classic --reflection-substring-analysis --reflection-speculative-use-based-analysis
+--id web --platform java_8_mini
+
+git clone  https://bitbucket.org/yanniss/doop/downloads/
+
+./doop -a selective-2-object-sensitive+heap --library-file depend_com_javax.jar --input-file securibench.jar --information-flow webapps --information-flow-high-soundness --open-programs servlets-only --reflection-classic --reflection-substring-analysis --reflection-speculative-use-based-analysis
+--id web --platform java_8_mini
+
+
+以下的三条指令用的编译javac版本是java1.7
+./doop --analysis 2-object-sensitive+heap  --library-file depend_com_javax.jar --input-file securibench.jar --regex securibench.micro.basic.* --platform java_11 --information-flow webapps  --id web --open-programs servlets-only --information-flow-high-soundness
+(当使用--platform java_11时候,就能得到basic文件夹下完全正确的结果，java版本的影响这么大？我能自己打包JRE吗？其次 --open-programs servlets-only也不能少，暂时还没有reflection的结果)
+./doop --analysis 2-object-sensitive+heap  --library-file depend_com_javax.jar --input-file securibench.jar  --platform java_11 --information-flow webapps  --id web --open-programs servlets-only --information-flow-high-soundness
+（此时可以得到基本完全正确的结果161个leak（与论文中的153个很接近），除了reflection文件夹下）
+./doop --analysis 2-object-sensitive+heap  --library-file depend_com_javax.jar --input-file securibench.jar  --platform java_8_mini --information-flow webapps  --id web --open-programs servlets-only --information-flow-high-soundness --reflection-classic --reflection-substring-analysis --reflection-speculative-use-based-analysis --regex securibench.micro.reflection.*
+(此时可以得到reflection中的结果)
+
+./doop --analysis 2-object-sensitive+heap  --library-file depend_com_javax.jar --input-file securibench.jar --platform java_11 --information-flow webapps  --id web  --information-flow-high-soundness --open-programs jackee
+（这里用的参数是--open-programs jackee 也可以得到161个leak）
+
+./doop --analysis 2-object-sensitive+heap  --library-file depend_com_javax.jar --input-file securibench.jar  --platform java_8_mini --information-flow webapps  --id web --open-programs jackee --information-flow-high-soundness --reflection-classic --reflection-substring-analysis --reflection-speculative-use-based-analysis --regex securibench.micro.reflection.*
+(可以得到reflection下的结果，这里用的--open-programs jackee)
+
+./doop --analysis 2-object-sensitive+heap  --library-file depend_com_javax.jar --input-file securibench.jar --platform java_8  --information-flow webapps  --id web  --information-flow-high-soundness --open-programs jackee --regex securibench.micro.reflection.* --reflection-classic --reflection-substring-analysis --reflection-speculative-use-based-analysis
+(用java_8 --open-programs jackee,也能得到reflection下面的结果)
+
+./doop -i DroidBench/apk/Callbacks/Button3.apk -a 2-object-sensitive+heap --platform android_25_fulljars -id Button3 --information-flow android
+(分析android程序)
+
+./doop --analysis 2-object-sensitive+heap  --library-file depend_webgoat/*.jar -input-file webgoat1.jar --platform java_11 --information-flow webapps  --id web  --information-flow-high-soundness --open-programs jackee
+(因为depend_webgoat有很多.jar文件,如果把这里面所有的jar文件都打包起来,做成一个总的jar文件,那么就分析不出结果,非要以上面这种方式才有结果)
