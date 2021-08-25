@@ -1,3 +1,4 @@
+./doop  -a micro  --input-file ~/Documents/doop/test34/securibench6.jar --platform java_8_mini  --id securibench6 --generate-jimple
 ./doop  -a context-insensitive --cfg --input-file demo2.jar --platform java_8_mini  --id demo2 --generate-jimple
 （cfg分析）
 ./doop --analysis context-insensitive --input-file Example.jar --platform java_8_mini --information-flow minimal --id example_info_mimal
