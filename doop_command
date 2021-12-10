@@ -1,3 +1,4 @@
+./doop  -a tfa  --input-file TwoObjHeap.jar --platform java_8_mini  --id TwoObjHeap --generate-jimple
 ./doop  -a micro  --input-file ~/Documents/doop/test34/securibench6.jar --platform java_8_mini  --id securibench6 --generate-jimple
 ./doop  -a context-insensitive --cfg --input-file demo2.jar --platform java_8_mini  --id demo2 --generate-jimple
 （cfg分析）
@@ -48,3 +49,10 @@ git clone  https://bitbucket.org/yanniss/doop/downloads/
 
 ./doop --analysis 2-object-sensitive+heap  --library-file depend_webgoat/*.jar -input-file webgoat1.jar --platform java_11 --information-flow webapps  --id web  --information-flow-high-soundness --open-programs jackee
 (因为depend_webgoat有很多.jar文件,如果把这里面所有的jar文件都打包起来,做成一个总的jar文件,那么就分析不出结果,非要以上面这种方式才有结果)
+
+登陆实验室电脑
+ssh lee@172.26.203.127 
+ssh liyj@192.168.1.196 
+
+./doop --analysis 2-object-sensitive+heap  --library-file depend_com_javax.jar --input-file ~/Documents/doop/test34/securibench.jar --platform java_11 --information-flow webapps  --id web  --information-flow-high-soundness --generate-jimple
+./doop --analysis 2-object-sensitive+heap   --input-file securibench.jar --platform java_11 --information-flow webapps  --id web  --information-flow-high-soundness --generate-jimple
